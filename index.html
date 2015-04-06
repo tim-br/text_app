@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html manifest="messenger.appcache">
+  <head>
+    <title>Textl</title>
+
+    <meta name=viewport content=width=device-width>
+    <meta name=viewport content=initial-scale=1.0>
+    <meta name=viewport content=user-scalable=no>
+
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+
+    <link rel=apple-touch-icon href=icon.png>
+    <link rel=apple-touch-startup-image href=startup.png>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,700,400italic" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <link href="http://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/screen.css" type="text/stylesheet" />
+
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+    <script src="http://cdn.pubnub.com/pubnub-3.5.1.js"></script>
+    <script src="chat.js"></script>
+
+    <style>
+
+
+    #homePage {
+    background-color: #b0c4de;
+    }
+
+    #chatListPage{
+    background-color: #b0c4de;
+    }
+
+    .lists {
+      background-color: #b0c4de;
+    }
+
+    #chatPage{
+      background-color: #b0c4de;
+
+    }
+
+    #head2{
+      background-color: #b0c4de;
+
+    }
+
+    h2 {
+      text-align: center;
+      font: 200 40px/1.5 'Pacifico', Helvetica, sans-serif;
+      color: #2b2b2b;
+      text-shadow: 3px 3px 0px rgba(0,0,0,0.1), 7px 7px 0px rgba(0,0,0,0.05);
+    }
+
+    h3 {
+      text-align: center;
+      font: 125 25px/1.5 'Pacifico', Helvetica, sans-serif;
+      color: #2b2b2b;
+      text-shadow: 3px 3px 0px rgba(0,0,0,0.1), 7px 7px 0px rgba(0,0,0,0.05);
+    }
+
+    </style>
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-41019038-1', 'dristic.github.io');
+      ga('send', 'pageview');
+
+    </script>
+
+  </head>
+  <body>
+    <!-- Home Page -->
+    <div data-role="page" id="homePage" data-theme="dark" class="type-home">
+
+      <div data-role="content">
+        <div class="logo">
+          <h2>Textl</h>
+        </div>
+        <input type="text" name="name" id="username" placeholder="Display Name" />
+        <a href="#" id="startChatButton" data-role="button">Text It!</a>
+      </div><!-- /content -->
+
+
+    </div><!-- /page -->
+
+
+    <!-- Chat List Page -->
+    <div data-role="page" id="chatListPage" data-theme="c" class="type-chat-list">
+      <div data-role="header">
+        <h1>Current Chats</h1>
+      </div>
+
+      <div data-role="content">
+        <input type="text" name="name" id="chatRoomName" placeholder="Chat Room Name" />
+        <a href="#" id="newChatButton" data-role="button">Join New Chat</a>
+
+        <br/>
+
+        <ul data-role="listview" data-split-icon="delete" data-split-theme="c" id="chatList">
+          <!-- <li><span class="username">User123:</span>This is my message.</li> -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Chat Page -->
+    <div data-role="page" id="chatPage" data-theme="dark" class="type-interior">
+
+      <div data-role="content">
+        <div class="content-primary">
+          <div    data-tap-toggle="false" id="head2"><!--data-position="fixed"-->
+            <h2 >Textl</h2>
+          </div><!-- /header -->
+
+          <div data-role="content" class="lists">
+            <ul data-role="listview" id="messageList">
+              <!-- <li><span class="username">User123:</span>This is my message.</li> -->
+            </ul>
+          </div>
+
+          <div data-role="footer" data-theme="c">
+            <textarea id="messageContent"></textarea>
+
+
+              <!--<div class="ui-grid-a">
+                <div class="ui-block-a"><a href="#" id="sendMessageButton" data-role="button">Send Message</a></div>
+              </div>-->
+          </div>
+          <a href="#" id="sendMessageButton" data-role="button" data-inline="false">Text It!</a>
+        </div>
+
+        <div class="content-secondary">
+          <ul data-role="listview" id="userList" data-theme="c">
+
+          </ul>
+        </div>
+      </div><!-- /content -->
+
+    </div><!-- /page -->
+
+    <div data-role="dialog" id="delete">
+      <div data-role="content">
+        <h3>Unsubscribe From This Channel?</h3>
+        <a href="#" data-role="button" id="deleteButton">Delete</a>
+        <a href="#" data-role="button" data-rel="back">Cancel</a>
+      </div>
+    </div>
+
+    <div data-role="page" id="userListPage" data-theme="c">
+      <div data-role="header">
+        <h1>Textl</h1>
+      </div>
+
+      <div data-role="content">
+
+      </div>
+    </div>
+
+    <script>
+    /*$("#popup").click(function(){
+      alert("hello world");
+    });*/
+
+    </script>
+  </body>
+</html>
