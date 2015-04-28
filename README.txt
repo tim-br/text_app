@@ -1,1 +1,1 @@
-This is the code for the project.
+This is the source code for the mobile chat application.
