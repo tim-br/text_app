@@ -1,13 +1,6 @@
 $(document).ready(function () {
 
-  ////
-  // PubNub Decorator
-  // -------------------
-  // This wraps the pubnub libarary so we can handle the uuid and list
-  // of subscribed channels.
-  ////
-
-
+  //initialize pubnub instance
   function PubNub() {
     this.publishKey = 'pub-c-35f7ef56-9f13-4bf8-83c3-e61f442233db';
     this.subscribeKey = 'sub-c-b1ee19ac-d1cd-11e4-9a30-02ee2ddab7fe';
@@ -27,8 +20,7 @@ $(document).ready(function () {
       subscribe_key: this.subscribeKey,
       uuid: this.username
     });
-    //console.log("now connected");
-    //addSubscription(userName);
+
   };
 
   PubNub.prototype.addSubscription = function(channel) {
@@ -114,9 +106,7 @@ $(document).ready(function () {
     }
   }
 
-  ////////
-  // Home View
-  /////
+  //home page view
   function HomeView() {
     if (localStorage["username"]) {
       usernameInput.val(localStorage["username"]);
@@ -139,9 +129,7 @@ $(document).ready(function () {
     });
   };
 
-  /////
-  // Chat List View
-  ///////
+  //chat view
   function ChatListView(event, data) {
     chatListEl.empty();
     for(var i = 0; i < pubnub.subscriptions.length; i++) {
@@ -216,20 +204,7 @@ $(document).ready(function () {
       }
     });
 
-    // Handle chat history
-    /*pubnub.history({
-      channel: chatChannel,
-      limit: 100
-    }, function (messages) {
-      messages = messages[0];
-      messages = messages || [];
-
-      for(var i = 0; i < messages.length; i++) {
-        self.handleMessage(messages[i], false);
-      }
-
-      $(document).scrollTop($(document).height());
-    });*/
+ 
 
     // Change the title to the chat channel.
     pages.chat.find("h1:first").text(chatChannel);
@@ -266,7 +241,6 @@ $(document).ready(function () {
     });
   };
 
-  // This handles appending new messages to our chat list.
   ChatView.prototype.handleMessage = function (message, animate) {
     if (animate !== false) animate = true;
 
@@ -278,19 +252,18 @@ $(document).ready(function () {
     messageList.append(messageEl);
     messageList.listview('refresh');
 
-    // Scroll to bottom of page
+    // scrolls to most recent messages
     if (animate === true) {
       $("html, body").animate({ scrollTop: $(document).height() - $(window).height() }, 'slow');
     }
 
     if (isBlurred) {
-      // Flash title if blurred
       clearInterval(timerId);
       timerId = setInterval(function () {
         document.title = document.title == "Textl" ? "New Text" : "Textl";
       }, 2000);
 
-      // Notification handling
+      // Notify if there is a message
       if (notificationPermission === 0 && message.username !== username) {
         var notification = window.webkitNotifications.createNotification(
           'icon.jpg',
@@ -307,13 +280,11 @@ $(document).ready(function () {
     }
   };
 
-  // Initially start off on the home page.
+  // starts the current view
   $.mobile.changePage(pages.home);
   var currentView = new HomeView();
 
-  // This code essentially does what routing does in Backbone.js.
-  // It takes the page destination and creates a view based on what
-  // page the user is navigating to.
+  //similar to backbone
   $(document).bind("pagechange", function (event, data) {
     if (data.toPage[0] == pages.chatList[0]) {
       currentView = new ChatListView(event, data);
